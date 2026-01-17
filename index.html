@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora IMC Rosa - Registros Iniciales</title>
+    <style>
+        :root {
+            --rosa-claro: #fff0f5;
+            --rosa-pastel: #ffb6c1;
+            --rosa-fuerte: #ff69b4;
+            --rosa-oscuro: #db7093;
+            --blanco: #ffffff;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: var(--rosa-claro);
+            color: #444;
+        }
+
+        .container { 
+            max-width: 1100px;
+            margin: auto;
+            background: var(--blanco); 
+            padding: 30px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 30px rgba(219, 112, 147, 0.15); 
+        }
+
+        h2 { 
+            color: var(--rosa-oscuro); 
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        /* Formulario */
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            background: #fffafa;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid var(--rosa-pastel);
+            margin-bottom: 40px;
+        }
+
+        input, select { 
+            padding: 12px 15px; 
+            border: 2px solid #eee;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .btn-add { 
+            padding: 12px 30px; 
+            background: var(--rosa-fuerte); 
+            color: white; 
+            border: none; 
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Tabla */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        th { 
+            background-color: var(--rosa-pastel); 
+            color: white;
+            padding: 15px;
+        }
+
+        td { 
+            padding: 15px; 
+            text-align: center; 
+            border-bottom: 1px solid #ffe4e1;
+        }
+
+        .badge-imc {
+            background: var(--rosa-fuerte);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .btn-delete {
+            background: #ff7b7b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎀 Control de Salud IMC 🎀</h2>
+    
+    <div class="form-container">
+        <input type="text" id="nombre" placeholder="Nombre">
+        <input type="number" id="edad" placeholder="Edad" style="width: 70px;">
+        <input type="number" id="peso" placeholder="Peso (kg)" style="width: 100px;">
+        <input type="number" id="estatura" placeholder="Estatura (m)" style="width: 100px;">
+        <select id="sexo">
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+        </select>
+        <button class="btn-add" onclick="agregarRegistro()">Calcular y Guardar</button>
+    </div>
+
+    <table id="tablaImc">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Peso</th>
+                <th>Estatura</th>
+                <th>IMC</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Luis</strong></td>
+                <td>31</td>
+                <td>66.00 kg</td>
+                <td>1.69 m</td>
+                <td><span class="badge-imc">23.11</span></td>
+                <td>Peso normal</td>
+                <td><button class="btn-delete" onclick="eliminarFila(this)">Borrar</button></td>
+            </tr>
+            <tr>
+                <td><strong>Maria</strong></td>
+                <td>20</td>
+                <td>69.00 kg</td>
+                <td>1.68 m</td>
+                <td><span class="badge-imc">24.45</span></td>
+                <td>Peso normal</td>
+                <td><button class="btn-delete" onclick="eliminarFila(this)">Borrar</button></td>
+            </tr>
+            <tr>
+                <td><strong>Alexander</strong></td>
+                <td>19</td>
+                <td>72.00 kg</td>
+                <td>1.75 m</td>
+                <td><span class="badge-imc">23.51</span></td>
+                <td>Peso normal</td>
+                <td><button class="btn-delete" onclick="eliminarFila(this)">Borrar</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function agregarRegistro() {
+        const nombre = document.getElementById('nombre').value;
+        const edad = document.getElementById('edad').value;
+        const peso = parseFloat(document.getElementById('peso').value);
+        const estatura = parseFloat(document.getElementById('estatura').value);
+        const sexo = document.getElementById('sexo').value;
+
+        if(!nombre || !peso || !estatura) {
+            alert("Completa los datos");
+            return;
+        }
+
+        const imc = (peso / (estatura * estatura)).toFixed(2);
+        
+        let estado = "";
+        if (imc < 18.5) estado = "Bajo peso";
+        else if (imc < 25) estado = "Peso normal";
+        else if (imc < 30) estado = "Sobrepeso";
+        else estado = "Obesidad";
+
+        const tabla = document.getElementById('tablaImc').getElementsByTagName('tbody')[0];
+        const fila = tabla.insertRow(0); // Agrega al principio
+
+        fila.innerHTML = `
+            <td><strong>${nombre}</strong></td>
+            <td>${edad}</td>
+            <td>${peso} kg</td>
+            <td>${estatura} m</td>
+            <td><span class="badge-imc">${imc}</span></td>
+            <td>${estado}</td>
+            <td><button class="btn-delete" onclick="eliminarFila(this)">Borrar</button></td>
+        `;
+
+        // Limpiar campos
+        document.getElementById('nombre').value = "";
+        document.getElementById('edad').value = "";
+        document.getElementById('peso').value = "";
+        document.getElementById('estatura').value = "";
+    }
+
+    function eliminarFila(btn) {
+        if(confirm("¿Eliminar este registro?")) {
+            btn.parentElement.parentElement.remove();
+        }
+    }
+</script>
+
+</body>
+</html>
